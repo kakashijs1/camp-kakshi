@@ -35,6 +35,10 @@ export const landmarkSchema = z.object({
     lng: z.coerce.number(),
 });
 
+
+
+
+
 export const validateWithZod = <T>(schema: ZodSchema<T>, data: unknown): T => {
   const result = schema.safeParse(data);
   if (!result.success) {

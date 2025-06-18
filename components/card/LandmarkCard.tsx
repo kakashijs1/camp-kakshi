@@ -20,14 +20,20 @@ const LandmarkCard = ({ landmark }: { landmark: LandmarkCardProps }) => {
 
         <div className="relative z-10 ">
           <div className="relative h-[280px] overflow-hidden rounded-2xl mb-6">
-            <Image
-              src={image}
-              alt={name}
-              sizes="(max-width:768px) 100vw, 50vw"
-              className="object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out "
-              fill
-              quality={100}
-            />
+            {image ? (
+              <Image
+                src={image}
+                alt={name}
+                sizes="(max-width:768px) 100vw, 50vw"
+                className="object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                fill
+                quality={100}
+              />
+            ) : (
+              <div className="bg-gray-200 w-full h-full flex items-center justify-center text-sm text-gray-500">
+                ไม่มีรูปภาพ
+              </div>
+            )}
 
             {/* Dynamic overlay with animated gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
@@ -70,7 +76,7 @@ const LandmarkCard = ({ landmark }: { landmark: LandmarkCardProps }) => {
                 </p>
               </div>
               <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors duration-300">
-                {description.substring(0, 120)}...
+                {(description ?? "").substring(0, 120)}...
               </p>
             </div>
 

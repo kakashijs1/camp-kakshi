@@ -12,6 +12,7 @@ import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
 import { revalidatePath } from "next/cache";
 import { unstable_cacheLife as cacheLife } from "next/cache";
+import { redis } from "@/lib/redis";
 
 const getAuthUser = async () => {
   //code body
@@ -84,6 +85,7 @@ export const createLandmarkAction = async (
     const fullPath = await uploadFile(validateFile.image);
 
     //step 3 Insert to DB
+
     await db.landmark.create({
       data: {
         ...validateField,
@@ -107,9 +109,23 @@ export const fetchLandmarks = async ({
   search?: string;
   category?: string;
 }) => {
-  "use cache";
-  cacheLife("hours");
+  const cacheKey = `landmarks:${search}:${category}`;
+  const cached = await redis.get(cacheKey);
+
+  if (typeof cached === "string") {
+    return JSON.parse(cached);
+  }
+
   const landmarks = await db.landmark.findMany({
+    select: {
+      id: true,
+      name: true,
+      province: true,
+      image: true,
+      description: true,
+      price: true,
+      category: true,
+    },
     where: {
       category,
       OR: [
@@ -117,26 +133,46 @@ export const fetchLandmarks = async ({
         { description: { contains: search, mode: "insensitive" } },
         { province: { contains: search, mode: "insensitive" } },
         { category: { contains: search, mode: "insensitive" } },
-        // {}
       ],
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { createdAt: "desc" },
   });
 
+  await redis.set(cacheKey, JSON.stringify(landmarks), { ex: 3600 });
   return landmarks;
 };
 
+
+
 export const fetchLandmarksHero = async () => {
-  "use cache";
-  cacheLife("hours");
+  const cacheKey = "landmarks:hero";
+
+  // ลองอ่านจาก Redis cache ก่อน
+  const cached = await redis.get(cacheKey);
+  if (typeof cached === "string") {
+    return JSON.parse(cached);
+  }
+
+  // ถ้าไม่มี cache → query จาก DB
   const landmarks = await db.landmark.findMany({
     orderBy: {
       createdAt: "desc",
     },
     take: 5,
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      description: true,
+      province: true,
+      price: true,
+      category: true,
+    },
   });
+
+  // เก็บลง Redis cache
+  await redis.set(cacheKey, JSON.stringify(landmarks), { ex: 3600 }); // 1 ชั่วโมง
+
   return landmarks;
 };
 
@@ -145,8 +181,16 @@ export const fetchFavoriteId = async ({
 }: {
   landmarkId: string;
 }) => {
-  
   const user = await getAuthUser();
+
+  const cacheKey = `favorite:${user.id}:${landmarkId}`;
+  const cached = await redis.get(cacheKey);
+
+  // ✅ Return ทันทีหากได้ string (UUID) หรือ "null"
+  if (typeof cached === "string") {
+    return cached === "null" ? null : cached;
+  }
+
   const favorite = await db.favorite.findFirst({
     where: {
       landmarkId: landmarkId,
@@ -157,8 +201,12 @@ export const fetchFavoriteId = async ({
     },
   });
 
-  return favorite?.id || null;
+  const favoriteId = favorite?.id ?? null;
+
+  await redis.set(cacheKey, favoriteId ?? "null", { ex: 3600 }); // ❗️เก็บเป็น string เสมอ
+  return favoriteId;
 };
+
 
 export const toggleFavoriteAction = async (prevState: {
   favoriteId: string | null;
