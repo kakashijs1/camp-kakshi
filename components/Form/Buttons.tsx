@@ -39,8 +39,8 @@ export const SubmitButton = ({ className, text, size }: SubmitButtonProps) => {
 export const SignInCardButton = () => {
   return (
     <SignInButton mode="modal">
-      <Button className="bg-red-500/70 cursor-pointer">
-        <Heart className="text-white" />
+      <Button className="bg-white group hover:bg-red-500 cursor-pointer rounded-full">
+        <Heart className="text-red-500 group-hover:text-black" />
       </Button>
     </SignInButton>
   );
