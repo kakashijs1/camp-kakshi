@@ -20,13 +20,13 @@ const Hero = ({ landmarks }: { landmarks: LandmarkCardProps[] }) => {
       autoplay={{
         delay: 3000,
       }}
-      className="mySwiper"
+      className="mySwiper "
     >
       {landmarks.map((landmark, index) => (
         <SwiperSlide key={index}>
           {/* 👉 ครอบ slide ด้วย motion.div */}
           <motion.div
-            className="relative rounded-xl overflow-hidden group shadow-lg w-full aspect-auto h-[250px] sm:h-[300px] md:h-[400px] lg:h-[600px]"
+            className="relative rounded-xl overflow-hidden group shadow-lg w-full aspect-auto h-[250px] sm:h-[300px] md:h-[400px] lg:h-[600px]  "
             initial={{ opacity: 0, scale: 0.95 }} // เริ่มต้นจางๆ และเล็กลงนิด
             animate={{ opacity: 1, scale: 1 }}   // ค่อยๆ ชัดและขยายกลับมาปกติ
             exit={{ opacity: 0, scale: 0.95 }}    // ตอนออกเลือนหาย

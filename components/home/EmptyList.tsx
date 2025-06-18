@@ -12,7 +12,9 @@ const EmptyList = ({
   btnText?: string;
 }) => {
   return (
-    <div className="flex flex-col items-center mt-6  animate-pulse justify-center min-h-[400px] space-y-4 text-center p-8 rounded-lg border border-dashed border-gray-800 bg-gray-300/">
+    
+      <div className="flex flex-col items-center mt-6  animate-pulse 
+     justify-center min-h-[400px] space-y-4 text-center p-8 rounded-lg border border-dashed border-gray-800  ">
       <FileX2 className="w-16 h-16 text-gray-400 animate-bounce " />
       
       <div className="space-y-2">

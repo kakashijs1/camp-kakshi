@@ -20,7 +20,7 @@ const LandmarkContainer = async ({
 //  }
 
   return (
-    <div>
+    <div className="py-8">
       <Hero landmarks={landmarksHero} />
       <CategoriesList search={search} category={category}/>
       {

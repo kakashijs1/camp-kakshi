@@ -2,8 +2,8 @@ import { Skeleton } from "../ui/skeleton";
 
 const LoadingCard = () => {
   return (
-    <>
-      <SkeletonCardHero />
+    <div className="py-8">
+      <SkeletonCardHero  />
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
         <SkeletonCard />
         <SkeletonCard />
@@ -14,7 +14,7 @@ const LoadingCard = () => {
         <SkeletonCard />
         <SkeletonCard />
       </div>
-    </>
+    </div>
   );
 };
 
