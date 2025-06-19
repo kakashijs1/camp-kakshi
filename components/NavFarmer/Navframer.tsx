@@ -35,7 +35,7 @@ const NavbarFramer = () => {
   return (
     <LazyMotion features={domAnimation}>
       <m.nav
-        className='shadow-xl xl:shadow-xl'
+        className='shadow-md xl:shadow-xl'
         initial='hidden'
         animate='show'
         variants={container}
