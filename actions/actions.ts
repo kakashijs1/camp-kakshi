@@ -113,10 +113,10 @@ export const fetchLandmarks = async ({
   const normalizedSearch = search?.toLowerCase().trim() || "";
   const normalizedCategory = category || "all";
   const cacheKey = `landmarks:${normalizedSearch}:${normalizedCategory}`;
-  
+
   try {
     const cached = await redis.get(cacheKey);
-    if (typeof cached === 'string') {
+    if (typeof cached === "string") {
       return JSON.parse(cached);
     }
   } catch (error) {
@@ -126,12 +126,12 @@ export const fetchLandmarks = async ({
 
   // ปรับปรุง database query
   const whereClause: any = {};
-  
+
   // ถ้ามี category filter
   if (category && category !== "all") {
     whereClause.category = category;
   }
-  
+
   // ถ้ามี search term
   if (normalizedSearch) {
     whereClause.OR = [
@@ -158,7 +158,7 @@ export const fetchLandmarks = async ({
   });
 
   // เก็บ cache โดยไม่ block การทำงาน
-  redis.set(cacheKey, JSON.stringify(landmarks), { ex: 3600 }).catch(err => {
+  redis.set(cacheKey, JSON.stringify(landmarks), { ex: 3600 }).catch((err) => {
     console.error("Failed to set cache:", err);
   });
 
@@ -175,8 +175,8 @@ export const prefetchPopularLandmarks = async () => {
   ];
 
   // Prefetch ข้อมูลยอดนิยมโดยไม่ต้องรอ
-  popularQueries.forEach(query => {
-    fetchLandmarks(query).catch(err => {
+  popularQueries.forEach((query) => {
+    fetchLandmarks(query).catch((err) => {
       console.error("Prefetch error:", err);
     });
   });
@@ -184,10 +184,10 @@ export const prefetchPopularLandmarks = async () => {
 
 export const fetchLandmarksHero = async () => {
   const cacheKey = "landmarks:hero";
-  
+
   try {
     const cached = await redis.get(cacheKey);
-    if (typeof cached === 'string') {
+    if (typeof cached === "string") {
       return JSON.parse(cached);
     }
   } catch (error) {
@@ -208,7 +208,7 @@ export const fetchLandmarksHero = async () => {
     take: 6, // จำกัดสำหรับ hero section
   });
 
-  redis.set(cacheKey, JSON.stringify(landmarks), { ex: 1800 }).catch(err => {
+  redis.set(cacheKey, JSON.stringify(landmarks), { ex: 1800 }).catch((err) => {
     console.error("Failed to set hero cache:", err);
   });
 
@@ -246,7 +246,6 @@ export const fetchFavoriteId = async ({
   return favoriteId;
 };
 
-
 export const toggleFavoriteAction = async (prevState: {
   favoriteId: string | null;
   landmarkId: string;
@@ -254,17 +253,20 @@ export const toggleFavoriteAction = async (prevState: {
 }) => {
   const { favoriteId, landmarkId, pathname } = prevState;
   const user = await getAuthUser();
+   const cacheKey = `favorite:${user.id}:${landmarkId}`;
   try {
+    let landmark;
+
     //Delete
     if (favoriteId) {
-      await db.favorite.delete({
+      landmark = await db.favorite.delete({
         where: {
           id: favoriteId,
         },
       });
     } else {
       //Create
-      await db.favorite.create({
+      landmark = await db.favorite.create({
         data: {
           landmarkId: landmarkId,
           profileId: user.id,
@@ -272,6 +274,9 @@ export const toggleFavoriteAction = async (prevState: {
       });
     }
     revalidatePath(pathname);
+    redis.set(cacheKey, JSON.stringify(landmark), { ex: 3600 }).catch(err => {
+    console.error("Failed to set cache:", err);
+  });
     return {
       message: favoriteId
         ? "Removed Favorite Success!!"
