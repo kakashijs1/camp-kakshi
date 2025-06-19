@@ -109,11 +109,37 @@ export const fetchLandmarks = async ({
   search?: string;
   category?: string;
 }) => {
-  const cacheKey = `landmarks:${search}:${category}`;
-  const cached = await redis.get(cacheKey);
+  // ปรับปรุง cache key ให้ดีขึ้น
+  const normalizedSearch = search?.toLowerCase().trim() || "";
+  const normalizedCategory = category || "all";
+  const cacheKey = `landmarks:${normalizedSearch}:${normalizedCategory}`;
+  
+  try {
+    const cached = await redis.get(cacheKey);
+    if (typeof cached === 'string') {
+      return JSON.parse(cached);
+    }
+  } catch (error) {
+    console.error("Redis cache error:", error);
+    // ถ้า Redis error ให้ทำงานต่อแบบไม่มี cache
+  }
 
-  if (typeof cached === "string") {
-    return JSON.parse(cached);
+  // ปรับปรุง database query
+  const whereClause: any = {};
+  
+  // ถ้ามี category filter
+  if (category && category !== "all") {
+    whereClause.category = category;
+  }
+  
+  // ถ้ามี search term
+  if (normalizedSearch) {
+    whereClause.OR = [
+      { name: { contains: normalizedSearch, mode: "insensitive" } },
+      { description: { contains: normalizedSearch, mode: "insensitive" } },
+      { province: { contains: normalizedSearch, mode: "insensitive" } },
+      { category: { contains: normalizedSearch, mode: "insensitive" } },
+    ];
   }
 
   const landmarks = await db.landmark.findMany({
@@ -126,52 +152,65 @@ export const fetchLandmarks = async ({
       price: true,
       category: true,
     },
-    where: {
-      category,
-      OR: [
-        { name: { contains: search, mode: "insensitive" } },
-        { description: { contains: search, mode: "insensitive" } },
-        { province: { contains: search, mode: "insensitive" } },
-        { category: { contains: search, mode: "insensitive" } },
-      ],
-    },
+    where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
     orderBy: { createdAt: "desc" },
+    take: 50, // จำกัดจำนวนผลลัพธ์
   });
 
-  await redis.set(cacheKey, JSON.stringify(landmarks), { ex: 3600 });
+  // เก็บ cache โดยไม่ block การทำงาน
+  redis.set(cacheKey, JSON.stringify(landmarks), { ex: 3600 }).catch(err => {
+    console.error("Failed to set cache:", err);
+  });
+
   return landmarks;
 };
 
+// เพิ่ม function สำหรับ prefetch popular data
+export const prefetchPopularLandmarks = async () => {
+  const popularQueries = [
+    { search: "", category: undefined }, // ข้อมูลทั้งหมด
+    { search: "", category: "temple" },
+    { search: "", category: "museum" },
+    { search: "", category: "park" },
+  ];
 
+  // Prefetch ข้อมูลยอดนิยมโดยไม่ต้องรอ
+  popularQueries.forEach(query => {
+    fetchLandmarks(query).catch(err => {
+      console.error("Prefetch error:", err);
+    });
+  });
+};
 
 export const fetchLandmarksHero = async () => {
   const cacheKey = "landmarks:hero";
-
-  // ลองอ่านจาก Redis cache ก่อน
-  const cached = await redis.get(cacheKey);
-  if (typeof cached === "string") {
-    return JSON.parse(cached);
+  
+  try {
+    const cached = await redis.get(cacheKey);
+    if (typeof cached === 'string') {
+      return JSON.parse(cached);
+    }
+  } catch (error) {
+    console.error("Redis cache error:", error);
   }
 
-  // ถ้าไม่มี cache → query จาก DB
   const landmarks = await db.landmark.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 5,
     select: {
       id: true,
       name: true,
+      province: true,
       image: true,
       description: true,
-      province: true,
       price: true,
       category: true,
     },
+    orderBy: { createdAt: "desc" },
+    take: 6, // จำกัดสำหรับ hero section
   });
 
-  // เก็บลง Redis cache
-  await redis.set(cacheKey, JSON.stringify(landmarks), { ex: 3600 }); // 1 ชั่วโมง
+  redis.set(cacheKey, JSON.stringify(landmarks), { ex: 1800 }).catch(err => {
+    console.error("Failed to set hero cache:", err);
+  });
 
   return landmarks;
 };
