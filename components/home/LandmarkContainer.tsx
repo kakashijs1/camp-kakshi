@@ -4,7 +4,7 @@ import Hero from "../hero/Hero";
 import CategoriesList from "./CategoriesList";
 import EmptyList from "./EmptyList";
 import Footer from "../Footer/Footer";
-import Navbar from "../Navbar/Navbar";
+
 
 const LandmarkContainer = async ({
   search,
@@ -20,7 +20,6 @@ const LandmarkContainer = async ({
 
   return (
     <>
-      <Navbar />
       <div className="py-8">
         <Hero landmarks={landmarksHero} />
         <CategoriesList search={search} category={category} />

@@ -4,6 +4,7 @@ import "./globals.css";
  
 import Providers from "./Providers";
 import { ClerkProvider } from "@clerk/nextjs";
+import Navbar from "@/components/Navbar/Navbar";
  
 
 const kanit = Kanit({
@@ -29,7 +30,7 @@ export default function RootLayout({
           className={`${kanit.className} antialiased`}
         >
           <Providers>
-
+            <Navbar />
             <main className="container  ">{children}</main>
           </Providers>
         </body>

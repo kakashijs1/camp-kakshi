@@ -41,7 +41,7 @@ const NavbarFramer = () => {
   return (
     <LazyMotion features={domAnimation}>
       <m.nav
-        className="shadow-md xl:shadow-xl rounded-b-2xl border  "
+        className="shadow-md xl:shadow-xl rounded-b-2xl border container "
         initial="hidden"
         animate="show"
         variants={container}
