@@ -41,36 +41,62 @@ const NavbarFramer = () => {
   return (
     <LazyMotion features={domAnimation}>
       <m.nav
-        className="shadow-md xl:shadow-xl rounded-b-2xl border container "
+        className="shadow-md xl:shadow-xl rounded-b-2xl border"
         initial="hidden"
         animate="show"
         variants={container}
       >
-        <div className="container  flex flex-col justify-between py-6 sm:flex-row sm:items-center gap-4">
-          {/* Logo */}
-          <m.div variants={item}>
-            <Logo />
-          </m.div>
-
-          {/* Search */}
-          <m.div className="w-full sm:w-auto" variants={item}>
+        <div className="container px-4 py-4 sm:py-6">
+          {/* Mobile Layout: Logo + Controls in one row, Search below */}
+          <div className="flex sm:hidden items-center justify-between mb-3">
+            <m.div variants={item}>
+              <Logo />
+            </m.div>
+            
+            <m.div
+              className="flex items-center gap-3"
+              variants={item}
+            >
+              <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <DarkMode />
+              </m.div>
+              <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <DropdownListMenu />
+              </m.div>
+            </m.div>
+          </div>
+          
+          {/* Mobile Search */}
+          <m.div className="sm:hidden w-full" variants={item}>
             <Suspense>
               <Search />
             </Suspense>
           </m.div>
 
-          <m.div
-            className="flex items-center justify-between lg:justify-center gap-4"
-            variants={item}
-          >
-            {/* darkmode */}
-            <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <DarkMode />
+          {/* Desktop Layout: All in one row */}
+          <div className="hidden sm:flex items-center justify-between gap-4">
+            <m.div variants={item}>
+              <Logo />
             </m.div>
-            <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <DropdownListMenu />
+
+            <m.div className="flex-1 max-w-md mx-8" variants={item}>
+              <Suspense>
+                <Search />
+              </Suspense>
             </m.div>
-          </m.div>
+
+            <m.div
+              className="flex items-center gap-4"
+              variants={item}
+            >
+              <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <DarkMode />
+              </m.div>
+              <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <DropdownListMenu />
+              </m.div>
+            </m.div>
+          </div>
         </div>
       </m.nav>
     </LazyMotion>

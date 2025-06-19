@@ -30,7 +30,9 @@ export default function RootLayout({
           className={`${kanit.className} antialiased`}
         >
           <Providers>
+           <div className="container">
             <Navbar />
+           </div>
             <main className="container  ">{children}</main>
           </Providers>
         </body>
