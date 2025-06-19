@@ -11,7 +11,7 @@ const LandmarkCard = ({ landmark }: { landmark: LandmarkCardProps }) => {
 
   return (
     <article className="group relative bg-white/80 dark:bg-gray-900/50 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 p-6 hover:-translate-y-2 hover:rotate-1">
-      <Link href={`/landmark/${id}`}>
+      <Link  href={`/landmark/${id}`}>
         {/* Animated background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 dark:from-blue-500/10 dark:via-purple-500/10 dark:to-pink-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-700" />
 

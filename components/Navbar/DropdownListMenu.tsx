@@ -49,7 +49,7 @@ const DropdownListMenu = () => {
         <SignedIn>
           {links.map((item, index) => (
             <DropdownMenuItem key={index} asChild>
-              <Link className="cursor-pointer" href={item.href}>
+              <Link prefetch={true} className="cursor-pointer" href={item.href}>
                 {item.label}
               </Link>
             </DropdownMenuItem>

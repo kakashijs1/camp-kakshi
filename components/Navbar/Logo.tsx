@@ -4,6 +4,7 @@ import Link from "next/link";
 const Logo = () => {
   return (
     <Link 
+    prefetch={true}
       href="/" 
       className="flex items-center justify-start gap-x-2 md:gap-x-4 transition-all hover:opacity-80"
     >

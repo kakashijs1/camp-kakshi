@@ -27,7 +27,7 @@ const EmptyList = ({
         variant="default"
         asChild
       >
-        <Link href={'/'}>{btnText}</Link>
+        <Link prefetch={true} href={'/'}>{btnText}</Link>
       </Button>
     </div>
   );
