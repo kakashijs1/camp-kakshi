@@ -266,6 +266,7 @@ export const toggleFavoriteAction = async (prevState: {
       });
     } else {
       //Create
+      
       landmark = await db.favorite.create({
         data: {
           landmarkId: landmarkId,

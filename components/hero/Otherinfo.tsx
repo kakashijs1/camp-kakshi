@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const Otherinfo = ({ landmark }: { landmark: LandmarkCardProps }) => {
     return (
         <motion.div
-            className="hidden md:block backdrop-blur-sm bg-black/30 rounded-lg p-4 shadow-md max-w-sm"
+            className="hidden lg:block backdrop-blur-sm bg-black/30 rounded-lg p-4 shadow-md max-w-sm"
             initial={{ opacity: 0, y: 20 }} // เริ่มจางและต่ำกว่าเล็กน้อย
             whileInView={{ opacity: 1, y: 0 }} // 👉 Animate เมื่อ scroll มาเห็น
             viewport={{ once: true }} // 👉 ทำครั้งเดียวพอ (ไม่ animate ซ้ำ)

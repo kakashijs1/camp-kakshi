@@ -33,17 +33,17 @@ const Hero = ({ landmarks }: { landmarks: LandmarkCardProps[] }) => {
             transition={{ duration: 0.8 }}        // ใช้เวลา 0.8 วินาที
           >
             <Image
-              className="w-full object-contain sm:object-cover transform group-hover:scale-105 brightness-75 group-hover:brightness-50 transition-all duration-500 ease-in-out"
+              className="w-full object-cover transform group-hover:scale-105 brightness-100 group-hover:brightness-50 transition-all duration-500 ease-in-out"
               src={landmark.image}
               alt={landmark.image || "Landmark image"}
               fill
             />
 
             {/* Layer สีดำทับ */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/20 to-transparent"></div>
 
             {/* กล่องข้อความแสดง Otherinfo */}
-            <div className="absolute bottom-0 left-0 md:bottom-2 md:left-2 z-50 text-white p-3 sm:p-4 bg-black/40 rounded-lg backdrop-blur-md shadow-md transition-all duration-300 group-hover:bg-black/60 m-2 sm:m-0">
+            <div className="absolute hidden lg:block bottom-0 left-0 md:bottom-2 md:left-2 z-50 text-white p-3 sm:p-4 bg-black/40 rounded-lg backdrop-blur-md shadow-md transition-all duration-300 group-hover:bg-black/60 m-2 sm:m-0">
               <Otherinfo landmark={landmark} />
             </div>
           </motion.div>

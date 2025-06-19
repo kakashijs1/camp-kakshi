@@ -3,6 +3,8 @@ import LandmarkList from "./LandmarkList";
 import Hero from "../hero/Hero";
 import CategoriesList from "./CategoriesList";
 import EmptyList from "./EmptyList";
+import Footer from "../Footer/Footer";
+import Navbar from "../Navbar/Navbar";
 
 const LandmarkContainer = async ({
   search,
@@ -17,15 +19,20 @@ const LandmarkContainer = async ({
   ]);
 
   return (
-    <div className="py-8">
-      <Hero landmarks={landmarksHero} />
-      <CategoriesList search={search} category={category} />
-      {landmarks.length === 0 ? (
-        <EmptyList headding="No results" btnText="clear Filter" />
-      ) : (
-        <LandmarkList landmarks={landmarks} />
-      )}
-    </div>
+    <>
+      <Navbar />
+      <div className="py-8">
+        <Hero landmarks={landmarksHero} />
+        <CategoriesList search={search} category={category} />
+        {landmarks.length === 0 ? (
+          <EmptyList headding="No results" btnText="clear Filter" />
+        ) : (
+          <LandmarkList landmarks={landmarks} />
+        )}
+
+        <Footer />
+      </div>
+    </>
   );
 };
 export default LandmarkContainer;

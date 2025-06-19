@@ -55,7 +55,7 @@ export const CardsubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
       className={`cursor-pointer transition-all duration-300 ease-in-out
       ${isFavorite 
         ? 'bg-pink-100 hover:bg-pink-200' 
-        : 'bg-white/80 hover:bg-gray-100'
+        : 'bg-white  hover:bg-white/10'
       }
       shadow-sm hover:shadow-md
       rounded-full

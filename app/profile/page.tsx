@@ -1,7 +1,11 @@
+import { Feature43 } from "@/components/feature43";
+import { Pricing2 } from "@/components/pricing2";
+
 const ProfilePage = () => {
   return (
     <>
-      <div>Profilepage</div>
+      <Feature43 />
+      <Pricing2 />
     </>
   );
 };

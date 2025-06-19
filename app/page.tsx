@@ -1,4 +1,6 @@
-import LoadingCard from "@/components/card/LoadingCard";
+
+import LoadingLogo from "@/components/card/LoadingLogo";
+ 
 import LandmarkContainer from "@/components/home/LandmarkContainer";
 import { Suspense } from "react";
 
@@ -13,7 +15,7 @@ const page = async ({
 
   return (
     <section>
-      <Suspense fallback={<LoadingCard />}>
+      <Suspense fallback={<LoadingLogo />}>
         <LandmarkContainer search={search} category={category} />
       </Suspense>
     </section>
